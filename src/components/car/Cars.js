@@ -44,6 +44,7 @@ const Cars = () => {
                                 <td>{c.description}</td>
                                 <td>
                                     <Link className="btn btn-outline-primary me-3" to={`/car/details/${c.id}`}>Read More</Link>
+                                    <Link className="btn btn-outline-warning me-3" to={`/car/edit/${c.id}`}>Edit</Link>
                                     <button className="btn btn-outline-danger" data-car-id={c.id} onClick={handleDeleteItemSelected}>Delete</button>
                                 </td>
                             </tr>
