@@ -1,10 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCarContext } from "../../providers/CarProvider";
 import { useEffect, useState } from "react";
+import InfoModal from "../modal/InfoModal";
 
 const EditCar = () => {
     const { carId } = useParams();
-    const { findCarById } = useCarContext();
+    const { findCarById, editCar } = useCarContext();
+    const navigate = useNavigate();
     const [car, setCar] = useState();
 
     useEffect(() => {
@@ -14,12 +16,37 @@ const EditCar = () => {
         fetchData();
     }, []);
 
+    const handleFormChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+
+        setCar(prevValue => ({
+            ...prevValue,
+            [name]: value
+        }));
+    }
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        const formSubmit = async () => {
+            const result = await editCar(carId, car);
+            if (result == 204){
+                document.getElementById("infoModalButton").click();
+            }
+        }
+        formSubmit();
+    }
+
+    const handleInfoModalConfirm = () => {
+        navigate("/");
+    }
+
     return (
         <>
             <section className="container-fluid">
                 <div className="row">
                     <div className="col">
-                        <form>
+                        <form onChange={handleFormChange} onSubmit={handleFormSubmit}>
                             <div className="mb-3">
                                 <label htmlFor="model" className="form-label">Model</label>
                                 <input type="text" className="form-control" id="model" name="model" defaultValue={car?.model} required />
@@ -46,6 +73,7 @@ const EditCar = () => {
                     </div>
                 </div>
             </section>
+            <InfoModal title="Car Edited" message={`The car ${car?.brand} ${car?.model} has been edited.`} onConfirm={handleInfoModalConfirm} />
         </>
     );
 };

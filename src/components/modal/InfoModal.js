@@ -1,4 +1,11 @@
-const InfoModal = ({ title = "Remember to add a Title", message = "Remember to add a Message" }) => {
+const InfoModal = ({ title = "Remember to add a Title", message = "Remember to add a Message", onConfirm }) => {
+
+    const handleOnConfirm = () => {
+        if (onConfirm) {
+            onConfirm();
+        }
+    }
+
     return (
         <>
             <button type="button" id="infoModalButton" className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#infoModal"></button>
@@ -13,7 +20,7 @@ const InfoModal = ({ title = "Remember to add a Title", message = "Remember to a
                             {message}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleOnConfirm}>Okay</button>
                         </div>
                     </div>
                 </div>

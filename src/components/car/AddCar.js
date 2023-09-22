@@ -4,12 +4,12 @@ import InfoModal from "../modal/InfoModal";
 
 const AddCar = () => {
     const { addCar } = useCarContext();
-    const [car, setCar] = useState({ model: undefined, brand: undefined, description: undefined, image: "default.jpg" });
+    const [car, setCar] = useState({ model: undefined, brand: undefined, description: undefined, image: null, file: null });
     const [postResult, setPostResult] = useState();
 
     const handleFormChange = (event) => {
         const name = event.target.name;
-        const value = event.target.value;
+        const value =  event.target.name === "file" ? event.target.files[0] : event.target.value;
 
         setCar(prevValue => ({
             ...prevValue,
@@ -48,6 +48,11 @@ const AddCar = () => {
                                 <label htmlFor="description" className="form-label">Description</label>
                                 <textarea className="form-control" id="description" name="description" rows={6} required></textarea>
                                 <div id="descriptionHelp" className="form-text">The description of the car</div>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="image" className="form-label">Image</label>
+                                <input type="file" className="form-control" accept="image/*" id="image" name="file" required />
+                                <div id="imageHelp" className="form-text">The image of the car</div>
                             </div>
                             <button type="submit" className="btn btn-outline-primary">Save</button>
                         </form>

@@ -29,24 +29,42 @@ const getCarById = async (id) => {
 }
 
 const postCar = async (car) => {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(car)) {
+        form.append(key, value);
+    }
+
     const result = await fetch(`${baseUrl}/car`, {
         method: "POST",
-        headers: {
-            "content-type": "application/json; charset=utf-8"
-        },
-        body: JSON.stringify(car)
+        body: form
     });
     return await result.json();
 }
 
 const deleteCar = async (id) => {
-    const result = await fetch(`${baseUrl}/car/${id}`,{
-        method:"DELETE",
+    const result = await fetch(`${baseUrl}/car/${id}`, {
+        method: "DELETE",
         headers: {
-            "content-type":"application/json; charset=utf-8"
+            "content-type": "application/json; charset=utf-8"
         }
     });
     return await result.json();
+}
+
+const putCar = async (id, car) => {
+    const result = await fetch(`${baseUrl}/car/${id}`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify(car)
+    });
+    if (result.ok) {
+        return result.status;
+    }
+    else {
+        throw new Error("There was an error with the PUT request. Contact your admin.");
+    }
 }
 
 export const CarProvider = ({ children }) => {
@@ -68,6 +86,15 @@ export const CarProvider = ({ children }) => {
         setCars(prevValue => prevValue.filter(c => c.id !== deletedCar.id));
         return deleteCar;
     }
+    const editCar = async (id, car) => {
+        const result = await putCar(id, car);
+        if (result === 204) {
+            const updatedCars = cars.map(c => c.id === Number(id) ? car : c);
+            setCars(updatedCars);
+        }
+
+        return result;
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,7 +104,7 @@ export const CarProvider = ({ children }) => {
     }, []);
 
     return (
-        <CarContext.Provider value={{ cars, findCarById, addCar, removeCar }}>
+        <CarContext.Provider value={{ cars, findCarById, addCar, removeCar, editCar }}>
             {children}
         </CarContext.Provider>
     );
